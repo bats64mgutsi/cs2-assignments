@@ -16,6 +16,8 @@ public abstract class Locator {
 
   public static final Locator instance = new LocatorImpl();
 
+  abstract public void reset();
+
   private static class LocatorImpl extends Locator {
     final List<Object> dependencies = new ArrayList<>();
 
@@ -32,6 +34,11 @@ public abstract class Locator {
       }
 
       return null;
+    }
+
+    @Override
+    public void reset() {
+      dependencies.clear();
     }
 
   }
