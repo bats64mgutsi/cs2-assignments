@@ -1,5 +1,7 @@
 package data_structures;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import data_structures.forks.BinaryTreeNode;
@@ -9,6 +11,12 @@ import data_structures.forks.BinaryTreeNode;
  */
 public class BinarySearchTree<T extends Comparable<T>> implements SimpleCollection<T> {
   BinaryTreeNode<T> rootNode = null;
+
+  // Adding nodes using recursion causes a StackOver error when there many nodes
+  // (+1000).
+  // We will therefore use an iterative solution that schedules every add node
+  // operation so that it can be ran by runAllAddNodeRunnables.
+  List<Runnable> addNodeRunnables = new ArrayList<>();
 
   @Override
   public T firstItemMatching(T other) throws Exception {
@@ -29,7 +37,8 @@ public class BinarySearchTree<T extends Comparable<T>> implements SimpleCollecti
   public void setDataSource(T[] items) {
     if (items.length > 0) {
       rootNode = new BinaryTreeNode<T>(items[0], null, null);
-      addNode(rootNode, rootNode, 1, items);
+      addNewAddNodeRunnable(rootNode, rootNode, 1, items);
+      runAllAddNodeRunnables();
     }
   }
 
@@ -51,21 +60,34 @@ public class BinarySearchTree<T extends Comparable<T>> implements SimpleCollecti
 
       if (nodeToAddTo.left == null) {
         nodeToAddTo.left = nextNode;
-        addNode(rootNode, rootNode, itemIndexToAdd + 1, items);
+        addNewAddNodeRunnable(rootNode, rootNode, itemIndexToAdd + 1, items);
       } else {
         // Follow the left child
-        addNode(rootNode, nodeToAddTo.left, itemIndexToAdd, items);
+        addNewAddNodeRunnable(rootNode, nodeToAddTo.left, itemIndexToAdd, items);
       }
     } else {
       // Add the node to the right or follow the right
 
       if (nodeToAddTo.right == null) {
         nodeToAddTo.right = nextNode;
-        addNode(rootNode, rootNode, itemIndexToAdd + 1, items);
+        addNewAddNodeRunnable(rootNode, rootNode, itemIndexToAdd + 1, items);
       } else {
         // Follow the right child
-        addNode(rootNode, nodeToAddTo.right, itemIndexToAdd, items);
+        addNewAddNodeRunnable(rootNode, nodeToAddTo.right, itemIndexToAdd, items);
       }
+    }
+  }
+
+  private void addNewAddNodeRunnable(BinaryTreeNode<T> rootNode, BinaryTreeNode<T> nodeToAddTo, int itemIndexToAdd,
+      T[] items) {
+    addNodeRunnables.add(() -> addNode(rootNode, nodeToAddTo, itemIndexToAdd, items));
+  }
+
+  private void runAllAddNodeRunnables() {
+    int size = addNodeRunnables.size();
+    for (int iii = 0; iii < size; iii++) {
+      addNodeRunnables.get(iii).run();
+      size = addNodeRunnables.size();
     }
   }
 
