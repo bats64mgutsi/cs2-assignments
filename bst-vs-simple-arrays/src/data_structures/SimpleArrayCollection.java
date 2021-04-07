@@ -8,12 +8,20 @@ import java.util.NoSuchElementException;
 public class SimpleArrayCollection<T extends Comparable<T>> implements SimpleCollection<T> {
   T[] dataSource = null;
 
+  private int numberOfKeyComparisonsWhenSearchingForItem = 0;
+
+  @Override
+  public int getNumberOfKeyComparisonsWhenSearchingForItem() {
+    return numberOfKeyComparisonsWhenSearchingForItem;
+  }
+
   @Override
   public T firstItemMatching(T other) throws Exception {
     if (dataSource == null)
       throw new NoSuchElementException("No data source was set.");
 
     for (T item : dataSource) {
+      numberOfKeyComparisonsWhenSearchingForItem += 1;
       if (item.compareTo(other) == 0)
         return item;
     }

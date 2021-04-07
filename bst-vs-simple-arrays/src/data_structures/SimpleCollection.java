@@ -3,6 +3,15 @@ package data_structures;
 import java.util.NoSuchElementException;
 
 public interface SimpleCollection<T extends Comparable<T>> {
+
+  /**
+   * Returns the number of times it compared a given item to another when
+   * searching for items.
+   * 
+   * This is incremented by the firstItemMatching method.
+   */
+  public int getNumberOfKeyComparisonsWhenSearchingForItem();
+
   /**
    * Returns the first item whose compareTo method returns zero when compared with
    * other.

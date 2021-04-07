@@ -19,6 +19,13 @@ public class BinarySearchTree<T extends Comparable<T>> implements SimpleCollecti
   // operation so that it can be ran by runAllAddNodeRunnables.
   List<Runnable> addNodeRunnables = new ArrayList<>();
 
+  private int numberOfKeyComparisonsWhenSearchingForItem = 0;
+
+  @Override
+  public int getNumberOfKeyComparisonsWhenSearchingForItem() {
+    return numberOfKeyComparisonsWhenSearchingForItem;
+  }
+
   @Override
   public T firstItemMatching(T other) throws Exception {
     final BinaryTreeNode<T> node = findNodeWithData(rootNode, other);
@@ -98,12 +105,18 @@ public class BinarySearchTree<T extends Comparable<T>> implements SimpleCollecti
 
     int compare = dataToSearchFor.compareTo(nodeToSearch.data);
     if (compare < 0) {
+      numberOfKeyComparisonsWhenSearchingForItem += 1;
+
       // Continue searching to the left of the node
       return findNodeWithData(nodeToSearch.left, dataToSearchFor);
     } else if (compare == 0) {
+      numberOfKeyComparisonsWhenSearchingForItem += 2;
+
       // We found the node
       return nodeToSearch;
     } else {
+      numberOfKeyComparisonsWhenSearchingForItem += 2;
+
       // Continue searching to the right of the node
       return findNodeWithData(nodeToSearch.right, dataToSearchFor);
     }
