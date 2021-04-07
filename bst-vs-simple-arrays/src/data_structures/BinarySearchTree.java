@@ -12,8 +12,9 @@ import data_structures.forks.BinaryTreeNode;
 public class BinarySearchTree<T extends Comparable<T>> implements SimpleCollection<T> {
   BinaryTreeNode<T> rootNode = null;
 
-  // Adding nodes using recursion causes a StackOver error when there many nodes
-  // (+1000).
+  // Adding nodes using recursion causes a StackOverflow error when there many
+  // nodes (+1000).
+  //
   // We will therefore use an iterative solution that schedules every add node
   // operation so that it can be ran by runAllAddNodeRunnables.
   List<Runnable> addNodeRunnables = new ArrayList<>();
