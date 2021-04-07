@@ -104,16 +104,16 @@ public class BinarySearchTree<T extends Comparable<T>> implements SimpleCollecti
       return null;
 
     int compare = dataToSearchFor.compareTo(nodeToSearch.data);
-    if (compare < 0) {
+    if (compare == 0) {
       numberOfKeyComparisonsWhenSearchingForItem += 1;
-
-      // Continue searching to the left of the node
-      return findNodeWithData(nodeToSearch.left, dataToSearchFor);
-    } else if (compare == 0) {
-      numberOfKeyComparisonsWhenSearchingForItem += 2;
 
       // We found the node
       return nodeToSearch;
+    } else if (compare < 0) {
+      numberOfKeyComparisonsWhenSearchingForItem += 2;
+
+      // Continue searching to the left of the node
+      return findNodeWithData(nodeToSearch.left, dataToSearchFor);
     } else {
       numberOfKeyComparisonsWhenSearchingForItem += 2;
 
