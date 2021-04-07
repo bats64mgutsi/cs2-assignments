@@ -38,6 +38,15 @@ public class StudentDataReaderService_Test {
   }
 
   @Test
+  public void shouldReadInTheCorrectNumberOfStudentsWhenThereManyStudents() {
+    setOkListFileContents("abc def ghi\njkl mno pqr\nstu vwx yza\n");
+    final StudentDataReaderService instance = StudentDataReaderService.makeInstance();
+    final Student[] returnedStudents = instance.readAllStudents();
+
+    assertEquals(3, returnedStudents.length);
+  }
+
+  @Test
   public void shouldParseALineSuchThatTheFirstWordIsTheStudentNumberThenStudentNameThenStudentSurname() {
     setOkListFileContents("abc def ghi\n");
     final StudentDataReaderService instance = StudentDataReaderService.makeInstance();

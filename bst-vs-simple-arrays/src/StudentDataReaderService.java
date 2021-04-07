@@ -32,19 +32,19 @@ abstract public class StudentDataReaderService {
       final InputStream inputStream = fileSystemService.openOkListStudentsFile();
       final Scanner scanner = new Scanner(inputStream);
 
-      final List<Student> out = new ArrayList<>();
+      Student[] out = new Student[0];
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
         final String[] studentData = line.split(" ");
 
-        out.add(new Student(studentData[0], studentData[1], studentData[2]));
+        final Student[] temp = new Student[out.length + 1];
+        System.arraycopy(out, 0, temp, 0, out.length);
+        temp[out.length] = new Student(studentData[0], studentData[1], studentData[2]);
+        out = temp;
       }
 
       scanner.close();
-      final Student[] students = new Student[out.size()];
-      out.toArray(students);
-
-      return students;
+      return out;
     }
 
   }
