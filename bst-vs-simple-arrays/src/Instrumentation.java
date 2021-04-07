@@ -80,7 +80,7 @@ public class Instrumentation {
 
     Integer worstCase = opCounts.stream().mapToInt(v -> v).max().orElseThrow(NoSuchMethodException::new);
     Integer bestCase = opCounts.stream().mapToInt(v -> v).min().orElseThrow(NoSuchMethodException::new);
-    Integer averageCase = opCounts.stream().mapToInt(v -> v).sum() / n;
+    Integer averageCase = (int) Math.ceil(opCounts.stream().mapToInt(v -> v).sum() / n);
 
     return new CaseScenarios(bestCase, worstCase, averageCase);
   }
