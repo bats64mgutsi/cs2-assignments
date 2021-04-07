@@ -5,20 +5,20 @@ import java.util.NoSuchElementException;
 /**
  * A collection that stores its items in a simple java java array.
  */
-public class SimpleArrayCollection<T> implements SimpleCollection<T> {
+public class SimpleArrayCollection<T extends Comparable<T>> implements SimpleCollection<T> {
   T[] dataSource = null;
 
   @Override
-  public T firstItemWhere(CollectionItemPicker<T> picker) throws Exception {
+  public T firstItemMatching(T other) throws Exception {
     if (dataSource == null)
       throw new NoSuchElementException("No data source was set.");
 
     for (T item : dataSource) {
-      if (picker.shouldPick(item))
+      if (item == other)
         return item;
     }
 
-    throw new NoSuchElementException("The given picker returned false for all elements.");
+    throw new NoSuchElementException("No element found for the given data.");
   }
 
   @Override

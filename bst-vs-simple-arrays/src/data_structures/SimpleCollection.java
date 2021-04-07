@@ -2,14 +2,18 @@ package data_structures;
 
 import java.util.NoSuchElementException;
 
-public interface SimpleCollection<T> {
+public interface SimpleCollection<T extends Comparable<T>> {
   /**
-   * Returns the first item for which the picker returns true.
+   * Returns the first item whose compareTo method returns zero when compared with
+   * other.
    * 
-   * @throws NoSuchElementException when the data source is exhausted but picker
-   *                                has not yet returned true.
+   * If the items have keys, then only the keys should be compared in the
+   * compareTo method.
+   * 
+   * @throws NoSuchElementException when the data source is exhausted but no match
+   *                                has been found yet.
    */
-  public T firstItemWhere(CollectionItemPicker<T> picker) throws Exception;
+  public T firstItemMatching(T other) throws Exception;
 
   /**
    * Calls the given visitor for each item in the data source.
