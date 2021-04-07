@@ -112,7 +112,7 @@ public class Instrumentation {
     System.out.println("-----------------------------------------------");
     System.out.println("n, worstCase, averageCase, bestCase");
     for (InstrumentationLogForGivenCardinality log : logs) {
-      System.out.printf("%d, %d, %d\n", log.cardinality, log.bstCaseScenarios.worstCase,
+      System.out.printf("%d, %d, %d, %d\n", log.cardinality, log.bstCaseScenarios.worstCase,
           log.bstCaseScenarios.averageCase, log.bstCaseScenarios.bestCase);
     }
 
@@ -121,7 +121,7 @@ public class Instrumentation {
     System.out.println("-----------------------------------------------");
     System.out.println("n, worstCase, averageCase, bestCase");
     for (InstrumentationLogForGivenCardinality log : logs) {
-      System.out.printf("%d, %d, %d\n", log.cardinality, log.arrayCaseScenarios.worstCase,
+      System.out.printf("%d, %d, %d, %d\n", log.cardinality, log.arrayCaseScenarios.worstCase,
           log.arrayCaseScenarios.averageCase, log.arrayCaseScenarios.bestCase);
     }
   }
