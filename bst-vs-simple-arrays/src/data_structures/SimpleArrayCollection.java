@@ -14,7 +14,7 @@ public class SimpleArrayCollection<T extends Comparable<T>> implements SimpleCol
       throw new NoSuchElementException("No data source was set.");
 
     for (T item : dataSource) {
-      if (item == other)
+      if (item.compareTo(other) == 0)
         return item;
     }
 
