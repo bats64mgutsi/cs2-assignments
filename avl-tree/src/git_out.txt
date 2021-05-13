@@ -1,0 +1,21 @@
+0: commit f464e8068641a50db5387127e79c6e8d9dd76f52
+1: Author: Batandwa Mgutsi <B.mgutsi@gmail.com>
+2: Date: Thu Apr 8 00:10:07 2021 +0200
+3:
+4: Ceil the averageCase scenario instead of just casting it to int to get more accurate values
+5:
+6: commit e5ba6fa5443eacce2cd43041b1623526b9e35d39
+7: Author: Batandwa Mgutsi <B.mgutsi@gmail.com>
+8: Date: Wed Apr 7 23:59:48 2021 +0200
+9:
+...
+101: Author: Batandwa Mgutsi <B.mgutsi@gmail.com>
+102: Date: Mon Apr 5 11:09:58 2021 +0200
+103:
+104: Adds locator
+105:
+106: commit f5909e8ef276b999a192774a533a44d67b26ccae
+107: Author: Batandwa Mgutsi <b.mgutsi@gmail.com>
+108: Date: Mon Apr 5 10:00:05 2021 +0200
+109:
+110: Initial commit

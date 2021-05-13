@@ -30,8 +30,6 @@ class TestHashTable {
          h.insert(trainingData.get(i));
       }
 
-
-
       if (!isInLearningMode) {
          for (int i = 0; i < trainingData.size(); i++) {
             if (h.find(trainingData.get(i)))
@@ -40,7 +38,6 @@ class TestHashTable {
                miss1++;
          }
 
-         
          for (int i = 0; i < unseenData.size(); i++) {
             if (h.find(unseenData.get(i)))
                hit2++;
