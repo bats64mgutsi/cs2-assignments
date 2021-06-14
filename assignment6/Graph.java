@@ -198,7 +198,7 @@ public class Graph {
    * Single-source weighted shortest-path algorithm. (Dijkstra) using priority
    * queues based on the binary heap
    */
-  public void dijkstra(String startName) {
+  public void dijkstra(String startName, boolean useEqualEqual) {
     PriorityQueue<Path> pq = new PriorityQueue<Path>();
 
     Vertex start = vertexMap.get(startName);
@@ -226,7 +226,9 @@ public class Graph {
         if (cvw < 0)
           throw new GraphException("Graph has negative edges");
 
-        if (w.dist > v.dist + cvw) {
+        final boolean condition = useEqualEqual ? w.dist >= v.dist + cvw:w.dist > v.dist + cvw;
+
+        if (condition) {
           w.dist = v.dist + cvw;
           w.prev = v;
           pq.add(new Path(w, w.dist));
@@ -338,7 +340,7 @@ public class Graph {
       if (alg.equals("u"))
         g.unweighted(startName);
       else if (alg.equals("d")) {
-        g.dijkstra(startName);
+        g.dijkstra(startName, false);
         g.printPath(destName);
       } else if (alg.equals("n"))
         g.negative(startName);

@@ -65,10 +65,11 @@ public class SimulatorOne {
   }
 
   /**
-   * @returns null if the path is impossible
+   * @return null if the path is impossible
    */
   private static PathInformation computePathInformation(String startNodeName, String endNodeName, Graph graph) {
-    graph.dijkstra(startNodeName);
+    graph.dijkstra(startNodeName, false);  
+
     Vertex destVertex = graph.vertexMap.get(endNodeName);
 
     if (destVertex == null)
@@ -78,10 +79,17 @@ public class SimulatorOne {
 
     final List<String> pathSequence = new ArrayList<>();
     pathSequenceMaker(destVertex, pathSequence);
-    
-    // TODO: Fix false.
-    return new PathInformation(destVertex.dist, pathSequence, false);
-  }
+
+    final double cost = destVertex.dist;
+    boolean hasAlternativesOfTheSamePrice = false;
+    graph.dijkstra(startNodeName, true);
+    destVertex = graph.vertexMap.get(endNodeName);
+    final List<String> pathSequenceForAlternative = new ArrayList<>();
+    pathSequenceMaker(destVertex, pathSequenceForAlternative);
+    hasAlternativesOfTheSamePrice = !pathSequence.toString().equals(pathSequenceForAlternative.toString());
+
+    return new PathInformation(cost, pathSequence, hasAlternativesOfTheSamePrice);
+  } 
 
   static void printSinglePath(PathInformation path) {
     if (path.hasAlternativesOfTheSamePrice)
@@ -90,8 +98,8 @@ public class SimulatorOne {
       System.out.println(path.getNamesOfNodesFromStartToEndAsOneString());
   }
 
-  static void pathSequenceMaker(Vertex vertex, List<String> out){
-    if(vertex.prev != null)
+  static void pathSequenceMaker(Vertex vertex, List<String> out) {
+    if (vertex.prev != null)
       pathSequenceMaker(vertex.prev, out);
 
     out.add(vertex.name);
@@ -130,9 +138,10 @@ class FullDeliveryPath implements Comparable<FullDeliveryPath> {
   }
 
   @Override
-  public boolean equals(Object o){
-    if(!(o instanceof FullDeliveryPath)) return false;
-    return compareTo((FullDeliveryPath)o) == 0;
+  public boolean equals(Object o) {
+    if (!(o instanceof FullDeliveryPath))
+      return false;
+    return compareTo((FullDeliveryPath) o) == 0;
   }
 }
 
