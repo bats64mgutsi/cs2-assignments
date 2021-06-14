@@ -24,7 +24,7 @@ class GraphException extends RuntimeException {
   /**
    * 
    */
-  private static final long serialVersionUID = 1L;
+  public static final long serialVersionUID = 1L;
 
   public GraphException(String name) {
     super(name);
@@ -103,7 +103,7 @@ class Vertex {
 
 public class Graph {
   public static final double INFINITY = Double.MAX_VALUE;
-  private Map<String, Vertex> vertexMap = new HashMap<String, Vertex>();
+  public Map<String, Vertex> vertexMap = new HashMap<String, Vertex>();
 
   /**
    * Add a new edge to the graph.
@@ -124,11 +124,11 @@ public class Graph {
     if (w == null)
       throw new NoSuchElementException("Destination vertex not found");
     else if (w.dist == INFINITY)
-      System.out.println(destName + " is unreachable");
+      println(destName + " is unreachable");
     else {
-      System.out.print("(Cost is: " + w.dist + ") ");
+      print("(Cost is: " + w.dist + ") ");
       printPath(w);
-      System.out.println();
+      println();
     }
   }
 
@@ -152,9 +152,9 @@ public class Graph {
   private void printPath(Vertex dest) {
     if (dest.prev != null) {
       printPath(dest.prev);
-      System.out.print(" to ");
+      print(" to ");
     }
-    System.out.print(dest.name);
+    print(dest.name);
   }
 
   /**
@@ -326,13 +326,13 @@ public class Graph {
    */
   public static boolean processRequest(Scanner in, Graph g) {
     try {
-      System.out.print("Enter start node:");
+      print("Enter start node:");
       String startName = in.nextLine();
 
-      System.out.print("Enter destination node:");
+      print("Enter destination node:");
       String destName = in.nextLine();
 
-      System.out.print("Enter algorithm (u, d, n, a ): ");
+      print("Enter algorithm (u, d, n, a ): ");
       String alg = in.nextLine();
 
       if (alg.equals("u"))
@@ -390,11 +390,15 @@ public class Graph {
       System.err.println(e);
     }
 
-    System.out.println("File read...");
-    System.out.println(g.vertexMap.size() + " vertices");
+    println("File read...");
+    println(g.vertexMap.size() + " vertices");
 
     Scanner in = new Scanner(System.in);
     while (processRequest(in, g))
       ;
   }
+
+  static void print(String s){}
+  static void println(String s){}
+  static void println(){}
 }
