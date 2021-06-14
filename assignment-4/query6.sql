@@ -1,0 +1,1 @@
+SELECT * from `employees` WHERE employeeNumber IN (1188, 1504);

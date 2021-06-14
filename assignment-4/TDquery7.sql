@@ -1,0 +1,1 @@
+SELECT productCode FROM 'products' WHERE 

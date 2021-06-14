@@ -1,0 +1,1 @@
+SELECT count(*) AS numOrders FROM `orders`;

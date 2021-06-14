@@ -1,0 +1,1 @@
+SELECT orderNumber, status, quantityOrdered, productName FROM `products` WHERE productVendor = 'Exoto Designs' AND status = 'Cancelled';

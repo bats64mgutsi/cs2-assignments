@@ -1,0 +1,1 @@
+SELECT customerNumber, amount FROM `payments` WHERE SUBSTR(checkNumber, 2, 1) = 'Q';
