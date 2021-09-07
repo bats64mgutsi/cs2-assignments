@@ -14,6 +14,8 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
   private WordRecord[] allWords;
   private int maxY;
 
+  private boolean gameOver = false;
+
   WordPanel(int maxY) {
     this.maxY = maxY;
   }
@@ -26,15 +28,28 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
     int width = getWidth();
     int height = getHeight();
     g.clearRect(0, 0, width, height);
-    g.setColor(Color.red);
-    g.fillRect(0, maxY - 10, width, height);
 
-    g.setColor(Color.black);
-    g.setFont(new Font("Helvetica", Font.PLAIN, 26));
+    if (gameOver) {
+      g.setColor(Color.black);
+      g.setFont(new Font("Helvetica", Font.BOLD, 30));
+      g.drawString("GAME OVER!", width / 2, height / 2);
+    } else {
+      g.setColor(Color.red);
+      g.fillRect(0, maxY - 10, width, height);
+      g.setColor(Color.black);
+      g.setFont(new Font("Helvetica", Font.PLAIN, 26));
 
-    for (WordRecord fallingWord : getFallingWords()) {
-      g.drawString(fallingWord.getWord(), fallingWord.getX(), fallingWord.getY() + 20);
+      for (WordRecord fallingWord : getFallingWords()) {
+        g.drawString(fallingWord.getWord(), fallingWord.getX(), fallingWord.getY() + 20);
+      }
     }
+  }
+
+  @Override
+  public void onStart() {
+    // reset
+    onStop();
+    gameOver = false;
   }
 
   @Override
@@ -44,6 +59,9 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
 
   @Override
   public void onAnimate(long deltaMillis) {
+    if (gameOver)
+      return;
+
     final WordRecord[] fallingWords = getFallingWords();
     for (WordRecord wordRecord : fallingWords) {
       final double increment = wordRecord.getSpeed() * 0.002 * deltaMillis;
@@ -58,7 +76,7 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
     for (WordRecord fallingWord : getFallingWords()) {
       final boolean solved = fallingWord.markAsSolvedIfMatches(typedText);
       if (solved)
-        // Break so that if we don't solve another falliong word with the same text.
+        // Break so that if we don't solve another falling word with the same text.
         break;
     }
   }
@@ -95,6 +113,10 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
           Score.currentScore.caughtWord(fallingWord.getWord().length());
           fallingWord.resetWord();
         }
+
+        // Or if the game is over.
+        if (Score.currentScore.getTotal() >= WordApp.totalWordsToFall)
+          gameOver = true;
       }
     }
 

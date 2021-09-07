@@ -69,6 +69,11 @@ public abstract class EventLoop extends Thread {
      * be reset.
      */
     public void onStop();
+
+    /**
+     * Called when the UI Thread has requested that animations begin.
+     */
+    public void onStart();
   }
 
 
@@ -97,6 +102,7 @@ public abstract class EventLoop extends Thread {
           if (nextEventToProcess.is(EventType.START)) {
             // Reset deltaTime timer to avoid jumping animations.
             timeService.reset();
+            listeners.forEach(listener -> listener.onStart());
           } else if (nextEventToProcess.is(EventType.STOP)) {
             listeners.forEach(listener -> listener.onStop());
           } else if (nextEventToProcess.is(EventType.DATA)) {
