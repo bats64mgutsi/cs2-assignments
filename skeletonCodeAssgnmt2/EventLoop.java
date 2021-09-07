@@ -5,9 +5,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * WordApp is split into two threads: The UI/Main Thread, and the Animation Thread.
  * 
  * The Animation Thread is responsible for animating the words on screen. It has to listen for three
- * events from the UI Thread: onResume, onPause, OnData, and onExit events.
+ * events from the UI Thread: onStart, onStop, OnData, and onExit events.
  * 
- * To achieve this listening the Animation Thread is furtther split into two parts: The EventLoop,
+ * To achieve this listening the Animation Thread is further split into two parts: The EventLoop,
  * and The EventLoopListeners.
  * 
  * The EventLoop is the loop that polls for events from the UI Thread in every iteration. It then
@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public abstract class EventLoop extends Thread {
   static public enum EventType {
-    RESUME, PAUSE, EXIT, DATA,
+    START, STOP, EXIT, DATA,
   }
 
   static public class Event {
@@ -63,6 +63,12 @@ public abstract class EventLoop extends Thread {
      * Called when the event loop has received data.
      */
     public void onData(String data);
+
+    /**
+     * Called when the UI Thread has requested that the animation be paused and all animation state
+     * be reset.
+     */
+    public void onStop();
   }
 
 
@@ -88,21 +94,19 @@ public abstract class EventLoop extends Thread {
       while (true) {
         final Event nextEventToProcess = eventQueue.poll();
         if (nextEventToProcess != null) {
-          if (nextEventToProcess.is(EventType.RESUME)) {
+          if (nextEventToProcess.is(EventType.START)) {
             // Reset deltaTime timer to avoid jumping animations.
             timeService.reset();
+          } else if (nextEventToProcess.is(EventType.STOP)) {
+            listeners.forEach(listener -> listener.onStop());
+          } else if (nextEventToProcess.is(EventType.DATA)) {
+            listeners.forEach(listener -> listener.onData(nextEventToProcess.data));
+          } else if (nextEventToProcess.is(EventType.EXIT)) {
+            break;
           }
 
-          isPaused = nextEventToProcess.is(EventType.PAUSE);
-
-
-          if (nextEventToProcess.is(EventType.DATA))
-            listeners.forEach(listener -> listener.onData(nextEventToProcess.data));
-
-          if (nextEventToProcess.is(EventType.EXIT))
-            break;
+          isPaused = nextEventToProcess.is(EventType.STOP);
         }
-
 
         drawAndAnimateListeners();
       }

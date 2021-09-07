@@ -63,6 +63,13 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
     }
   }
 
+  @Override
+  public void onStop() {
+    Score.currentScore.resetScore();
+    for (WordRecord fallingWord : getFallingWords())
+      fallingWord.resetWord();
+  }
+
   private WordRecord[] getFallingWords() {
     return Arrays.stream(allWords).filter(word -> word.isFalling()).toArray(WordRecord[]::new);
   }

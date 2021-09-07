@@ -73,7 +73,7 @@ public class WordApp {
     // add the listener to the jbutton to handle the "pressed" event
     startB.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        animationLoop.dispatch(EventLoop.EventType.RESUME);
+        animationLoop.dispatch(EventLoop.EventType.START);
         textEntry.requestFocus();
       }
     });
@@ -81,7 +81,7 @@ public class WordApp {
     JButton endB = new JButton("End");
     endB.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        animationLoop.dispatch(EventLoop.EventType.PAUSE);
+        animationLoop.dispatch(EventLoop.EventType.STOP);
       }
     });
 
