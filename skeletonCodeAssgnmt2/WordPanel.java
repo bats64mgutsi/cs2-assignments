@@ -2,12 +2,8 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.concurrent.CountDownLatch;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class WordPanel extends JPanel implements EventLoop.EventLoopListener {

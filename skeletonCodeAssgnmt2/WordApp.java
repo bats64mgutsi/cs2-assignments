@@ -1,15 +1,11 @@
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-
 import java.util.Scanner;
-import java.util.concurrent.*;
-// model is separate from the view.
 
 public class WordApp {
   // shared variables
@@ -99,10 +95,9 @@ public class WordApp {
 
     g.add(b);
 
-    frame.setLocationRelativeTo(null); // Center window on screen.
-    frame.add(g); // add contents to window
+    frame.setLocationRelativeTo(null); 
+    frame.add(g); 
     frame.setContentPane(g);
-    // frame.pack(); // don't do this - packs it into small space
     frame.setVisible(true);
   }
 
@@ -111,12 +106,10 @@ public class WordApp {
     try {
       Scanner dictReader = new Scanner(new FileInputStream(filename));
       int dictLength = dictReader.nextInt();
-      // System.out.println("read '" + dictLength+"'");
 
       dictStr = new String[dictLength];
       for (int i = 0; i < dictLength; i++) {
         dictStr[i] = new String(dictReader.next());
-        // System.out.println(i+ " read '" + dictStr[i]+"'"); //for checking
       }
       dictReader.close();
     } catch (IOException e) {
