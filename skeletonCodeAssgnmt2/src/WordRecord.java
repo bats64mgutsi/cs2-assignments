@@ -1,3 +1,4 @@
+package src;
 
 public class WordRecord {
   private String text;
