@@ -41,6 +41,13 @@ public class WordApp {
     JLabel caught = new JLabel("Caught: " + Score.currentScore.getCaught() + "    ");
     JLabel missed = new JLabel("Missed:" + Score.currentScore.getMissed() + "    ");
     JLabel scr = new JLabel("Score:" + Score.currentScore.getScore() + "    ");
+
+    Score.currentScore.addListener(score -> {
+      caught.setText("Caught: " + score.getCaught() + "    ");
+      missed.setText("Missed:" + score.getMissed() + "    ");
+      scr.setText("Score:" + score.getScore() + "    ");
+    });
+
     txt.add(caught);
     txt.add(missed);
     txt.add(scr);

@@ -1,8 +1,11 @@
+import java.util.LinkedList;
 
 public class Score {
   private int missedWords;
   private int caughtWords;
   private int gameScore;
+
+  private LinkedList<OnScoreChangedListener> scoreChangedListeners = new LinkedList<>();
 
   Score() {
     missedWords = 0;
@@ -10,38 +13,51 @@ public class Score {
     gameScore = 0;
   }
 
-  // all getters and setters must be synchronized
+  public void addListener(OnScoreChangedListener onScoreChangedListener) {
+    scoreChangedListeners.add(onScoreChangedListener);
+  }
 
-  public int getMissed() {
+  public synchronized int getMissed() {
     return missedWords;
   }
 
-  public int getCaught() {
+  public synchronized int getCaught() {
     return caughtWords;
   }
 
-  public int getTotal() {
+  public synchronized int getTotal() {
     return (missedWords + caughtWords);
   }
 
-  public int getScore() {
+  public synchronized int getScore() {
     return gameScore;
   }
 
-  public void missedWord() {
+  public synchronized void missedWord() {
     missedWords++;
+    notifyListeners();
   }
 
-  public void caughtWord(int length) {
+  public synchronized void caughtWord(int length) {
     caughtWords++;
     gameScore += length;
+    notifyListeners();
   }
 
-  public void resetScore() {
+  public synchronized void resetScore() {
     caughtWords = 0;
     missedWords = 0;
     gameScore = 0;
+    notifyListeners();
   }
 
-  public static Score currentScore = new Score();
+  private void notifyListeners() {
+    scoreChangedListeners.forEach(listener -> listener.onChange(this));
+  }
+
+  public static final Score currentScore = new Score();
+
+  public static interface OnScoreChangedListener {
+    public void onChange(Score score);
+  }
 }
