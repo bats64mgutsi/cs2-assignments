@@ -7,10 +7,9 @@ public class WordRecord {
   private int maxY;
   private boolean dropped;
   private boolean isFalling = false;
+  private boolean solved = false;
 
   private int fallingSpeed;
-  private static int maxWait = 1500;
-  private static int minWait = 100;
 
   public static WordDictionary dict = new WordDictionary();
 
@@ -20,7 +19,7 @@ public class WordRecord {
     y = 0;
     maxY = 300;
     dropped = false;
-    fallingSpeed = (int) (Math.random() * (maxWait - minWait) + minWait);
+    fallingSpeed = (int) (Math.random() * 100);
   }
 
   WordRecord(String text) {
@@ -49,6 +48,10 @@ public class WordRecord {
 
   public synchronized void setWord(String text) {
     this.text = text;
+  }
+
+  public synchronized boolean isSolved() {
+    return solved;
   }
 
   public synchronized boolean isFalling() {
@@ -85,17 +88,14 @@ public class WordRecord {
     text = dict.getNewWord();
     dropped = false;
     isFalling = false;
+    solved = false;
     x = (int) (Math.random() * maxX);
-    fallingSpeed = (int) (Math.random() * (maxWait - minWait) + minWait);
+    fallingSpeed = (int) (Math.random() * 100);
   }
 
-  public synchronized boolean matchWord(String typedText) {
-    // System.out.println("Matching against: "+text);
-    if (typedText.equals(this.text)) {
-      resetWord();
-      return true;
-    } else
-      return false;
+  public synchronized boolean markAsSolvedIfMatches(String typedText) {
+    solved = typedText.equals(this.text);
+    return solved;
   }
 
   public synchronized void beginDrop() {

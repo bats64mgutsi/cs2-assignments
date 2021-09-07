@@ -49,7 +49,7 @@ public class WordApp {
     textEntry.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         String text = textEntry.getText();
-        // [snip]
+        animationLoop.dispatchData(text);
         textEntry.setText("");
         textEntry.requestFocus();
       }
@@ -66,7 +66,7 @@ public class WordApp {
     // add the listener to the jbutton to handle the "pressed" event
     startB.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        animationLoop.dispatch(EventLoop.Event.RESUME);
+        animationLoop.dispatch(EventLoop.EventType.RESUME);
         textEntry.requestFocus();
       }
     });
@@ -74,14 +74,14 @@ public class WordApp {
     JButton endB = new JButton("End");
     endB.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        animationLoop.dispatch(EventLoop.Event.PAUSE);
+        animationLoop.dispatch(EventLoop.EventType.PAUSE);
       }
     });
 
     JButton quitBtn = new JButton("Quit");
     quitBtn.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        animationLoop.dispatch(EventLoop.Event.EXIT);
+        animationLoop.dispatch(EventLoop.EventType.EXIT);
         frame.dispose();
       }
     });

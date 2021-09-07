@@ -46,11 +46,21 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
   public void onAnimate(long deltaMillis) {
     final WordRecord[] fallingWords = getFallingWords();
     for (WordRecord wordRecord : fallingWords) {
-      final double increment = wordRecord.getSpeed() * 0.0002 * deltaMillis;
-      wordRecord.drop((int) increment);
+      final double increment = wordRecord.getSpeed() * 0.002 * deltaMillis;
+      wordRecord.drop((int) increment + 1);
     }
 
-    computeWordStates(fallingWords);
+    computeScoreAndResetWords(fallingWords);
+  }
+
+  @Override
+  public void onData(String typedText) {
+    for (WordRecord fallingWord : getFallingWords()) {
+      final boolean solved = fallingWord.markAsSolvedIfMatches(typedText);
+      if (solved)
+        // Break so that if we don't solve another falliong word with the same text.
+        break;
+    }
   }
 
   private WordRecord[] getFallingWords() {
@@ -65,7 +75,7 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
    * reset. More words will be added to ensure the nr of words showing equals
    * WordApp.maxWordsOnScreen.
    */
-  private void computeWordStates(WordRecord[] fallingWords) {
+  private void computeScoreAndResetWords(WordRecord[] fallingWords) {
     for (WordRecord fallingWord : fallingWords) {
       synchronized (fallingWord) {
         if (fallingWord.dropped()) {
@@ -73,7 +83,11 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
           fallingWord.resetWord();
         }
 
-        // TODO(Batandwa): Resolve captured words
+        // Or if the word is captured/solved.
+        if (fallingWord.isSolved()) {
+          Score.currentScore.caughtWord(fallingWord.getWord().length());
+          fallingWord.resetWord();
+        }
       }
     }
 

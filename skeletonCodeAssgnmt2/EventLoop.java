@@ -5,14 +5,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * WordApp is split into two threads: The UI/Main Thread, and the Animation Thread.
  * 
  * The Animation Thread is responsible for animating the words on screen. It has to listen for three
- * events from the UI Thread: onResume, onPause, and onExit events.
+ * events from the UI Thread: onResume, onPause, OnData, and onExit events.
  * 
  * To achieve this listening the Animation Thread is furtther split into two parts: The EventLoop,
  * and The EventLoopListeners.
  * 
  * The EventLoop is the loop that polls for events from the UI Thread in every iteration. It then
- * decodes these events as onResume, onPause, and onExit events and passes them to the
- * EventLoopListeners.
+ * decodes these events events and passes them to the EventLoopListeners if necessary.
  * 
  * The event loop keeps an internal state of whether the animation thread is paused or not.
  * Initially it sets this to paused, in which case the event listeners will not be notified of any
@@ -21,8 +20,22 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * At a rate of 30Hz the event loop notifies the event loop listeners to draw.
  */
 public abstract class EventLoop extends Thread {
-  static public enum Event {
-    RESUME, PAUSE, EXIT
+  static public enum EventType {
+    RESUME, PAUSE, EXIT, DATA,
+  }
+
+  static public class Event {
+    public final EventType type;
+    public final String data;
+
+    public Event(EventType type, String data) {
+      this.type = type;
+      this.data = data;
+    }
+
+    public boolean is(EventType type) {
+      return this.type == type;
+    }
   }
 
   static public interface EventLoopListener {
@@ -45,6 +58,11 @@ public abstract class EventLoop extends Thread {
      * Otherwise only onDraw is called.
      */
     public void onAnimate(long deltaMillis);
+
+    /**
+     * Called when the event loop has received data.
+     */
+    public void onData(String data);
   }
 
 
@@ -56,8 +74,13 @@ public abstract class EventLoop extends Thread {
     protected TimeService timeService = new TimeService();
 
     @Override
-    public void dispatch(Event event) {
-      eventQueue.add(event);
+    public void dispatch(EventType event) {
+      eventQueue.add(new Event(event, null));
+    }
+
+    @Override
+    public void dispatchData(String data) {
+      eventQueue.add(new Event(EventType.DATA, data));
     }
 
     @Override
@@ -65,19 +88,23 @@ public abstract class EventLoop extends Thread {
       while (true) {
         final Event nextEventToProcess = eventQueue.poll();
         if (nextEventToProcess != null) {
-          if (nextEventToProcess == Event.RESUME) {
+          if (nextEventToProcess.is(EventType.RESUME)) {
             // Reset deltaTime timer to avoid jumping animations.
             timeService.reset();
           }
 
-          isPaused = nextEventToProcess == Event.PAUSE;
-          if (nextEventToProcess == Event.EXIT)
+          isPaused = nextEventToProcess.is(EventType.PAUSE);
+
+
+          if (nextEventToProcess.is(EventType.DATA))
+            listeners.forEach(listener -> listener.onData(nextEventToProcess.data));
+
+          if (nextEventToProcess.is(EventType.EXIT))
             break;
         }
 
 
-        if (!isPaused)
-          drawAndAnimateListeners();
+        drawAndAnimateListeners();
       }
     }
 
@@ -101,10 +128,14 @@ public abstract class EventLoop extends Thread {
     public void addListener(EventLoopListener listener) {
       listeners.add(listener);
     }
+
+
   }
 
 
-  public abstract void dispatch(Event event);
+  public abstract void dispatch(EventType eventType);
+
+  public abstract void dispatchData(String data);
 
   public abstract void addListener(EventLoopListener listener);
 
