@@ -54,10 +54,8 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
   @Override
   public void onAnimate(long deltaMillis) {
     for (WordRecord wordRecord : words) {
-      synchronized (wordRecord) {
-        final double increment = wordRecord.getSpeed() * 0.0002 * deltaMillis;
-        wordRecord.drop((int) increment);
-      }
+      final double increment = wordRecord.getSpeed() * 0.0002 * deltaMillis;
+      wordRecord.drop((int) increment);
     }
   }
 
