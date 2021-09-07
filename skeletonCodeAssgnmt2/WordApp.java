@@ -13,19 +13,12 @@ import java.util.concurrent.*;
 
 public class WordApp {
   // shared variables
-  static int noWords = 4;
-  static int totalWords;
+  static int maxWordsOnScreen = 4;
+  static int totalWordsToFall;
 
   static int frameX = 1000;
   static int frameY = 600;
   static int yLimit = 480;
-
-  static WordDictionary dict = new WordDictionary(); // use default dictionary, to read from file
-                                                     // eventually
-
-  static WordRecord[] words;
-  static volatile boolean done; // must be volatile
-  static Score score = new Score();
 
   static WordPanel wordPanel;
   static EventLoop animationLoop = EventLoop.makeInstance();
@@ -39,20 +32,18 @@ public class WordApp {
     g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS));
     g.setSize(frameX, frameY);
 
-    wordPanel = new WordPanel(words, yLimit);
+    wordPanel = new WordPanel(yLimit);
     wordPanel.setSize(frameX, yLimit + 100);
     g.add(wordPanel);
 
     JPanel txt = new JPanel();
     txt.setLayout(new BoxLayout(txt, BoxLayout.LINE_AXIS));
-    JLabel caught = new JLabel("Caught: " + score.getCaught() + "    ");
-    JLabel missed = new JLabel("Missed:" + score.getMissed() + "    ");
-    JLabel scr = new JLabel("Score:" + score.getScore() + "    ");
+    JLabel caught = new JLabel("Caught: " + Score.currentScore.getCaught() + "    ");
+    JLabel missed = new JLabel("Missed:" + Score.currentScore.getMissed() + "    ");
+    JLabel scr = new JLabel("Score:" + Score.currentScore.getScore() + "    ");
     txt.add(caught);
     txt.add(missed);
     txt.add(scr);
-
-    // [snip]
 
     final JTextField textEntry = new JTextField("", 20);
     textEntry.addActionListener(new ActionListener() {
@@ -87,8 +78,17 @@ public class WordApp {
       }
     });
 
+    JButton quitBtn = new JButton("Quit");
+    quitBtn.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        animationLoop.dispatch(EventLoop.Event.EXIT);
+        frame.dispose();
+      }
+    });
+
     b.add(startB);
     b.add(endB);
+    b.add(quitBtn);
 
     g.add(b);
 
@@ -119,30 +119,26 @@ public class WordApp {
   }
 
   public static void main(String[] args) {
+    totalWordsToFall = Integer.parseInt(args[0]);
+    maxWordsOnScreen = Integer.parseInt(args[1]);
 
-    // deal with command line arguments
-    totalWords = Integer.parseInt(args[0]); // total words to fall
-    noWords = Integer.parseInt(args[1]); // total words falling at any point
-    assert (totalWords >= noWords); // this could be done more neatly
-    String[] tmpDict = getDictFromFile(args[2]); // file of words
+    assert (totalWordsToFall >= maxWordsOnScreen);
+
+    String[] tmpDict = getDictFromFile(args[2]);
     if (tmpDict != null)
-      dict = new WordDictionary(tmpDict);
-
-    WordRecord.dict = dict; // set the class dictionary for the words.
-
-    words = new WordRecord[noWords]; // shared array of current words
-
-    // [snip]
+      WordRecord.dict = new WordDictionary(tmpDict);
 
     setupGUI(frameX, frameY, yLimit);
 
-    int x_inc = (int) frameX / noWords;
-    // initialize shared array of current words
+    int x_inc = (int) frameX / maxWordsOnScreen;
 
-    for (int i = 0; i < noWords; i++) {
-      words[i] = new WordRecord(dict.getNewWord(), i * x_inc, yLimit);
+    final WordRecord[] words = new WordRecord[WordRecord.dict.getWordCount()];
+    for (int i = 0; i < WordRecord.dict.getWordCount(); i++) {
+      final String word = WordRecord.dict.getNewWord();
+      words[i] = new WordRecord(word, frameX - word.length() * 8, yLimit);
     }
 
+    wordPanel.setWords(words);
     animationLoop.addListener(wordPanel);
     animationLoop.start();
   }

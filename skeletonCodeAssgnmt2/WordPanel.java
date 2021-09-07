@@ -4,17 +4,23 @@ import java.awt.Graphics;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
-  public static volatile boolean done;
-  private WordRecord[] words;
-  private int noWords;
+  private WordRecord[] allWords;
   private int maxY;
 
+  WordPanel(int maxY) {
+    this.maxY = maxY;
+  }
+
+  public void setWords(WordRecord[] allWords) {
+    this.allWords = allWords;
+  }
 
   public void paintComponent(Graphics g) {
     int width = getWidth();
@@ -25,25 +31,10 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
 
     g.setColor(Color.black);
     g.setFont(new Font("Helvetica", Font.PLAIN, 26));
-    // draw the words
-    // animation must be added
-    for (int i = 0; i < noWords; i++) {
-      // g.drawString(words[i].getWord(),words[i].getX(),words[i].getY());
-      g.drawString(words[i].getWord(), words[i].getX(), words[i].getY() + 20); // y-offset for
-                                                                               // skeleton
-                                                                               // so that
-                                                                               // you can
-                                                                               // see the
-                                                                               // words
+
+    for (WordRecord fallingWord : getFallingWords()) {
+      g.drawString(fallingWord.getWord(), fallingWord.getX(), fallingWord.getY() + 20);
     }
-
-  }
-
-  WordPanel(WordRecord[] words, int maxY) {
-    this.words = words; // will this work?
-    noWords = words.length;
-    done = false;
-    this.maxY = maxY;
   }
 
   @Override
@@ -53,12 +44,55 @@ public class WordPanel extends JPanel implements EventLoop.EventLoopListener {
 
   @Override
   public void onAnimate(long deltaMillis) {
-    for (WordRecord wordRecord : words) {
+    final WordRecord[] fallingWords = getFallingWords();
+    for (WordRecord wordRecord : fallingWords) {
       final double increment = wordRecord.getSpeed() * 0.0002 * deltaMillis;
       wordRecord.drop((int) increment);
     }
+
+    computeWordStates(fallingWords);
   }
 
+  private WordRecord[] getFallingWords() {
+    return Arrays.stream(allWords).filter(word -> word.isFalling()).toArray(WordRecord[]::new);
+  }
+
+  /**
+   * From the falling words, this method determines if a word has been captured or has been dropped
+   * (i.e missed).
+   * 
+   * If a word has been dropped, the nr of words missed score is incremented nd the word state is
+   * reset. More words will be added to ensure the nr of words showing equals
+   * WordApp.maxWordsOnScreen.
+   */
+  private void computeWordStates(WordRecord[] fallingWords) {
+    for (WordRecord fallingWord : fallingWords) {
+      synchronized (fallingWord) {
+        if (fallingWord.dropped()) {
+          Score.currentScore.missedWord();
+          fallingWord.resetWord();
+        }
+
+        // TODO(Batandwa): Resolve captured words
+      }
+    }
+
+    dropMoreWordsIfPossible(fallingWords.length);
+  }
+
+  private void dropMoreWordsIfPossible(int numberOfWordsAlreadyFalling) {
+    int numberOfWordsToDrop = WordApp.maxWordsOnScreen - numberOfWordsAlreadyFalling;
+    while (numberOfWordsToDrop > 0) {
+      sampleNextWordToBeDropped().beginDrop();
+      numberOfWordsToDrop--;
+    }
+  }
+
+  private WordRecord sampleNextWordToBeDropped() {
+    WordRecord[] nonFallingWords =
+        Arrays.stream(allWords).filter(word -> !word.isFalling()).toArray(WordRecord[]::new);
+    return nonFallingWords[(int) (Math.random() * nonFallingWords.length)];
+  }
 }
 
 
