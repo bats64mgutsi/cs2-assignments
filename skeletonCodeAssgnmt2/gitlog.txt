@@ -1,0 +1,13 @@
+7247004 was Batandwa Mgutsi, 6 minutes ago, message: Adds report
+0b804d8 was Batandwa Mgutsi, 70 minutes ago, message: Adds README.md file
+cc37a19 was Batandwa Mgutsi, 83 minutes ago, message: Clears unused variable warning
+dd60919 was Batandwa Mgutsi, 84 minutes ago, message: Adds makefile
+deaf0c9 was Batandwa Mgutsi, 4 hours ago, message: Clean up
+5ad9e6f was Batandwa Mgutsi, 4 hours ago, message: Adds 'Game Over' state
+62f7337 was Batandwa Mgutsi, 5 hours ago, message: Reset game on 'End'
+14c50bb was Batandwa Mgutsi, 5 hours ago, message: Update score in GUI
+3f0e0a4 was Batandwa Mgutsi, 5 hours ago, message: Adds feature to capture words
+c0357a2 was Batandwa Mgutsi, 6 hours ago, message: Adds code to drop words
+61de174 was Batandwa Mgutsi, 7 hours ago, message: Remove useless 'synchronized' as there is no in between state between calls'
+9d06fda was Batandwa Mgutsi, 8 hours ago, message: Adds initial version of animation loop
+558d250 was Batandwa Mgutsi, 26 hours ago, message: Adds initial assignment 2 code
