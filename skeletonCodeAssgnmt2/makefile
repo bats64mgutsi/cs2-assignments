@@ -3,6 +3,7 @@
 
 JAVAC = javac
 JAVA = java
+JAVA_DOCS = javadoc
 APP_ENTRY_CLASS = src/WordApp.java
 APP_ENTRY_CLASS_COMPILED = $(basename $(APP_ENTRY_CLASS))
 
@@ -13,6 +14,9 @@ build: $(APP_ENTRY_CLASS)
 
 run:
 	$(JAVA) -cp bin $(APP_ENTRY_CLASS_COMPILED) $(ARGS)
+
+docs:
+	$(JAVA_DOCS) -d docs src
 
 clean:
 	$(RM) bin/src/*.class

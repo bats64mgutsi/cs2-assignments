@@ -29,3 +29,11 @@ Java classes are generated into the bin folder. To generate them simply run make
 ```bash
 $ make
 ```
+
+## Generate Docs
+
+To generate the javadocs for the code, run the following make command:
+
+```bash
+$ make docs
+```
