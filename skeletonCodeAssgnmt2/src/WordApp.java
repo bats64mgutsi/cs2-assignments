@@ -131,8 +131,6 @@ public class WordApp {
 
     setupGUI(frameX, frameY, yLimit);
 
-    int x_inc = (int) frameX / maxWordsOnScreen;
-
     final WordRecord[] words = new WordRecord[WordRecord.dict.getWordCount()];
     for (int i = 0; i < WordRecord.dict.getWordCount(); i++) {
       final String word = WordRecord.dict.getNewWord();
