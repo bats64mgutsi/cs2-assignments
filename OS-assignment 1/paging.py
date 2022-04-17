@@ -108,3 +108,10 @@ def opt(frameCount: int, pageReferences: list[int]) -> int:
                 pageTable.append(pageNumber)
 
     return pageFaults
+
+# For Test Script
+
+
+FIFO = fifo
+LRU = lru
+OPT = opt
