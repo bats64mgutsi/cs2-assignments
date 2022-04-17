@@ -1,5 +1,13 @@
+# Program written by Batandwa Mgutsi
+# Student Number: MGTBAT001
+#
+# usage: python3 <number_of_page_references>
+#
+
 from collections import deque
 from heapq import heapify, heappop, heappush
+from random import randint, random
+import sys
 from typing import Tuple
 
 # Utils ---------
@@ -51,7 +59,7 @@ def getCandidateIndexForPageWithHighestStepsToNextCount(candidatePageNumbers: li
 
     return selectedPageIndex
 
-# Actual algorithms
+# Actual algorithms ------------
 
 
 def fifo(frameCount: int, pageReferences: list[int]) -> int:
@@ -109,9 +117,29 @@ def opt(frameCount: int, pageReferences: list[int]) -> int:
 
     return pageFaults
 
-# For Test Script
+# For Test Script ------------
 
 
 FIFO = fifo
 LRU = lru
 OPT = opt
+
+# Main --------
+
+
+def main():
+    size = 3
+    numberOfPageReferences = int(sys.argv[1])
+    def f(x): return randint(0, 9)
+    pages = list(map(f, range(numberOfPageReferences)))
+    print("test string:", pages)
+    print("FIFO", FIFO(size, pages), "page faults.")
+    print("LRU", LRU(size, pages), "page faults.")
+    print("OPT", OPT(size, pages), "page faults.")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python paging.py [number of pages]")
+    else:
+        main()
