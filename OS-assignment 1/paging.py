@@ -8,7 +8,7 @@ from collections import deque
 from heapq import heapify, heappop, heappush
 from random import randint, random
 import sys
-from typing import Tuple
+from typing import List, Tuple
 
 # Utils ---------
 
@@ -21,7 +21,7 @@ def getCurrentTimestamp() -> int:
     return currentTimeStamp
 
 
-def getPageLRUPageTableEntryIndex(pageNumber: int, pageTable: list[Tuple[float, int]]) -> int:
+def getPageLRUPageTableEntryIndex(pageNumber: int, pageTable: List[Tuple[float, int]]) -> int:
     for index, (_, entryPageNumber) in enumerate(pageTable):
         if entryPageNumber == pageNumber:
             return index
@@ -29,11 +29,11 @@ def getPageLRUPageTableEntryIndex(pageNumber: int, pageTable: list[Tuple[float, 
     return -1
 
 
-def lruPageTableEntryExist(pageNumber: int, pageTable: list[Tuple[float, int]]) -> bool:
+def lruPageTableEntryExist(pageNumber: int, pageTable: List[Tuple[float, int]]) -> bool:
     return getPageLRUPageTableEntryIndex(pageNumber, pageTable) != -1
 
 
-def countStepsToNextTouchForPage(pageNumber: int, inReferenceString: list[int], cursor: int) -> int:
+def countStepsToNextTouchForPage(pageNumber: int, inReferenceString: List[int], cursor: int) -> int:
     if cursor >= len(inReferenceString):
         return 0
 
@@ -45,7 +45,7 @@ def countStepsToNextTouchForPage(pageNumber: int, inReferenceString: list[int], 
     return len(forwardCollection)
 
 
-def getCandidateIndexForPageWithHighestStepsToNextCount(candidatePageNumbers: list[int], inReferenceString: list[int], cursor: int) -> int:
+def getCandidateIndexForPageWithHighestStepsToNextCount(candidatePageNumbers: List[int], inReferenceString: List[int], cursor: int) -> int:
     selectedPageIndex = 0
     selectedPageStepsToNextTouchCount = countStepsToNextTouchForPage(
         candidatePageNumbers[0], inReferenceString, cursor)
@@ -62,7 +62,7 @@ def getCandidateIndexForPageWithHighestStepsToNextCount(candidatePageNumbers: li
 # Actual algorithms ------------
 
 
-def fifo(frameCount: int, pageReferences: list[int]) -> int:
+def fifo(frameCount: int, pageReferences: List[int]) -> int:
     """Runs the FIFO algorithm on the given test string and returns the number of page faults"""
     pageTable = deque([], maxlen=frameCount)
     pageFaults = 0
@@ -76,9 +76,9 @@ def fifo(frameCount: int, pageReferences: list[int]) -> int:
     return pageFaults
 
 
-def lru(frameCount: int, pageReferences: list[int]) -> int:
+def lru(frameCount: int, pageReferences: List[int]) -> int:
     """Runs the LRU algorithm on the given test string and returns the number of page faults"""
-    pageTable = list[Tuple[float, int]]()
+    pageTable: List[Tuple[float, int]] = []
     pageFaults = 0
     for pageNumber in pageReferences:
         if lruPageTableEntryExist(pageNumber, pageTable):
@@ -97,9 +97,9 @@ def lru(frameCount: int, pageReferences: list[int]) -> int:
     return pageFaults
 
 
-def opt(frameCount: int, pageReferences: list[int]) -> int:
+def opt(frameCount: int, pageReferences: List[int]) -> int:
     """Runs the OPT algorithm on the given test string and returns the number of page faults"""
-    pageTable = list[int]()
+    pageTable: List[int] = []
     pageFaults = 0
     for cursor, pageNumber in enumerate(pageReferences):
         if pageNumber in pageTable:
@@ -130,7 +130,7 @@ OPT = opt
 def main():
     size = 3
     numberOfPageReferences = int(sys.argv[1])
-    def f(x): return randint(0, 9)
+    def f(_): return randint(0, 9)
     pages = list(map(f, range(numberOfPageReferences)))
     print("test string:", pages)
     print("FIFO", FIFO(size, pages), "page faults.")
