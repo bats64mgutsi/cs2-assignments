@@ -16,12 +16,14 @@ currentTimeStamp = 0
 
 
 def getCurrentTimestamp() -> int:
+    """Returns a simulated timestamp"""
     global currentTimeStamp
     currentTimeStamp += 1
     return currentTimeStamp
 
 
-def getPageLRUPageTableEntryIndex(pageNumber: int, pageTable: List[Tuple[float, int]]) -> int:
+def getLRUPageTableEntryIndex(pageNumber: int, pageTable: List[Tuple[float, int]]) -> int:
+    """Returns the index of the page entry for the page with the given number."""
     for index, (_, entryPageNumber) in enumerate(pageTable):
         if entryPageNumber == pageNumber:
             return index
@@ -30,10 +32,13 @@ def getPageLRUPageTableEntryIndex(pageNumber: int, pageTable: List[Tuple[float, 
 
 
 def lruPageTableEntryExist(pageNumber: int, pageTable: List[Tuple[float, int]]) -> bool:
-    return getPageLRUPageTableEntryIndex(pageNumber, pageTable) != -1
+    """Returns true if, and only if, a page with the given page number exists in the given pageTable."""
+    return getLRUPageTableEntryIndex(pageNumber, pageTable) != -1
 
 
 def countStepsToNextTouchForPage(pageNumber: int, inReferenceString: List[int], cursor: int) -> int:
+    """Returns the number of page references between the current index given by cursor till the next
+       reference of the page with the given page number."""
     if cursor >= len(inReferenceString):
         return 0
 
@@ -46,6 +51,8 @@ def countStepsToNextTouchForPage(pageNumber: int, inReferenceString: List[int], 
 
 
 def getCandidateIndexForPageWithHighestStepsToNextCount(candidatePageNumbers: List[int], inReferenceString: List[int], cursor: int) -> int:
+    """Returns the index, in candidatePageNumbers, of the page that will not be used for the
+       longest time in the given reference string from the current index given by cursor."""
     selectedPageIndex = 0
     selectedPageStepsToNextTouchCount = countStepsToNextTouchForPage(
         candidatePageNumbers[0], inReferenceString, cursor)
@@ -83,7 +90,7 @@ def lru(frameCount: int, pageReferences: List[int]) -> int:
     for pageNumber in pageReferences:
         if lruPageTableEntryExist(pageNumber, pageTable):
             # Touch the entry
-            entryIndex = getPageLRUPageTableEntryIndex(pageNumber, pageTable)
+            entryIndex = getLRUPageTableEntryIndex(pageNumber, pageTable)
             pageTable[entryIndex] = (getCurrentTimestamp(), pageNumber)
             heapify(pageTable)
         else:
